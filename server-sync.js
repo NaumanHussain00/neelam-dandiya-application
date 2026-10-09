@@ -83,9 +83,15 @@
   });
 
   window.renderAdmin = function () {
-    document.getElementById("queueCount").textContent = getLocalLeads()
-      .filter((lead) => lead.serverSync !== "synced").length;
-    document.getElementById("playedCount").textContent = getStats().played;
+    const queueCount = document.getElementById("queueCount");
+    const playedCount = document.getElementById("playedCount");
+    if (queueCount) {
+      queueCount.textContent = getLocalLeads()
+        .filter((lead) => lead.serverSync !== "synced").length;
+    }
+    if (playedCount) {
+      playedCount.textContent = getStats().played;
+    }
   };
 
   void window.syncPending();

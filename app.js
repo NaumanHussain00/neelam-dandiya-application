@@ -1,13 +1,56 @@
 const CONFIG = { GOOGLE_SCRIPT_URL: "" };
 const STORAGE_KEY = "neelam_dandiya_leads_v1", STATS_KEY = "neelam_dandiya_stats_v1";
-let state = { lead: null, questions: [], index: 0, score: 0, locked: false };
+let state = { lead: null, questions: [], index: 0, score: 0, locked: false, timerId: null, timeLeft: 30 };
 let adminAuthToken = null;
 let adminFetchedLeads = [];
 
 const $ = id => document.getElementById(id);
 const screens = ["home", "quiz", "result", "admin"];
 
+function clearQuestionTimer() {
+  if (state.timerId) {
+    clearInterval(state.timerId);
+    state.timerId = null;
+  }
+}
+
+function updateTimerText() {
+  if (!$("feedback")) return;
+  $("feedback").textContent = `Time left: ${state.timeLeft}s`;
+}
+
+function handleQuestionTimeout() {
+  if (state.locked) return;
+  state.locked = true;
+  const q = state.questions[state.index];
+  const buttons = [...document.querySelectorAll(".answer")];
+  buttons.forEach(b => b.classList.add("disabled"));
+  const correctButton = buttons.find(b => b.textContent === q.answer);
+  correctButton?.classList.add("correct");
+  $("feedback").textContent = `Time's up! Correct answer: ${q.answer}`;
+  updateLead({ score: state.score, result: "lost", status: "completed" });
+  setTimeout(() => finish(false), 1000);
+}
+
+function startQuestionTimer() {
+  clearQuestionTimer();
+  state.timeLeft = 30;
+  updateTimerText();
+  state.timerId = setInterval(() => {
+    state.timeLeft -= 1;
+    if (state.timeLeft <= 0) {
+      state.timeLeft = 0;
+      updateTimerText();
+      clearQuestionTimer();
+      handleQuestionTimeout();
+      return;
+    }
+    updateTimerText();
+  }, 1000);
+}
+
 function show(id) {
+  if (id !== "quiz") clearQuestionTimer();
   screens.forEach(s => $(s).classList.toggle("active", s === id));
   window.scrollTo(0, 0);
 }
@@ -60,7 +103,7 @@ $("registrationForm").addEventListener("submit", e => {
   leads.push(lead);
   saveLeads(leads);
 
-  state = { lead, questions: pickQuestions(QUESTION_BANK.categories[course], 3), index: 0, score: 0, locked: false };
+  state = { lead, questions: pickQuestions(QUESTION_BANK.categories[course], 3), index: 0, score: 0, locked: false, timerId: null, timeLeft: 30 };
   renderQuestion();
   show("quiz");
 });
@@ -84,6 +127,8 @@ function renderQuestion() {
     b.onclick = () => answer(b, opt, q);
     box.appendChild(b);
   });
+
+  startQuestionTimer();
 }
 
 function updateLead(patch) {
@@ -97,23 +142,30 @@ function updateLead(patch) {
 
 function answer(btn, opt, q) {
   if (state.locked) return;
+  clearQuestionTimer();
   state.locked = true;
   document.querySelectorAll(".answer").forEach(b => b.classList.add("disabled"));
   const ok = opt === q.answer;
   btn.classList.add(ok ? "correct" : "wrong");
-  $("feedback").textContent = ok ? "✓ Correct!" : "✕ Incorrect!";
-
-  if (ok) state.score++;
 
   if (!ok) {
+    const correctButton = [...document.querySelectorAll(".answer")].find(b => b.textContent === q.answer);
+    correctButton?.classList.add("correct");
+    $("feedback").textContent = `✕ Incorrect! Correct answer: ${q.answer}`;
     updateLead({ score: state.score, result: "lost", status: "completed" });
-    setTimeout(() => finish(false), 650);
-  } else if (state.index === 2) {
+    setTimeout(() => finish(false), 1000);
+    return;
+  }
+
+  state.score++;
+  $("feedback").textContent = "✓ Correct!";
+
+  if (state.index === 2) {
     updateLead({ score: 3, result: "won", status: "completed" });
-    setTimeout(() => finish(true), 650);
+    setTimeout(() => finish(true), 750);
   } else {
     state.index++;
-    setTimeout(() => { state.locked = false; renderQuestion(); }, 550);
+    setTimeout(() => { state.locked = false; renderQuestion(); }, 850);
   }
 }
 
