@@ -1,0 +1,16 @@
+{
+  "name": "neelam-dandiya-quiz",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Neelam Dandiya quiz with SQLite registration storage",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=20.19.0"
+  },
+  "dependencies": {
+    "better-sqlite3": "^12.2.0",
+    "express": "^5.1.0"
+  }
+}
