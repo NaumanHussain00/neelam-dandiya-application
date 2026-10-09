@@ -110,11 +110,8 @@ app.get("/api/admin/leads", (request, response) => {
   response.json({ ok: true, leads });
 });
 
-for (const file of ["index.html", "style.css", "questions.js", "app.js", "answer-feedback.js", "server-sync.js"]) {
-  app.get(`/${file}`, (_request, response) => response.sendFile(path.join(root, file)));
-}
+app.use(express.static(root));
 app.get("/", (_request, response) => response.sendFile(path.join(root, "index.html")));
-app.use((_request, response) => response.status(404).json({ error: "Not found." }));
 
 if (!process.env.VERCEL) {
   app.listen(port, "0.0.0.0", () => {
