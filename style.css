@@ -4,7 +4,13 @@
   --primary-light: #ab234d;
   --gold: #d49c29;
   --gold-glow: #f7cb63;
-  --bg-gradient: linear-gradient(160deg, #1c0810 0%, #3a0d1e 40%, #5c122a 75%, #2a0916 100%);
+  --bg-gradient: linear-gradient(
+    160deg,
+    #1c0810 0%,
+    #3a0d1e 40%,
+    #5c122a 75%,
+    #2a0916 100%
+  );
   --card-bg: rgba(255, 255, 255, 0.94);
   --card-border: rgba(247, 203, 99, 0.25);
   --text-main: #2b141d;
@@ -13,8 +19,8 @@
   --shadow-glow: 0 12px 36px rgba(143, 25, 61, 0.35);
   --radius-lg: 24px;
   --radius-md: 14px;
-  --font-heading: 'Outfit', system-ui, sans-serif;
-  --font-body: 'Plus Jakarta Sans', system-ui, sans-serif;
+  --font-heading: "Outfit", system-ui, sans-serif;
+  --font-body: "Plus Jakarta Sans", system-ui, sans-serif;
 }
 
 * {
@@ -82,7 +88,7 @@ body {
   letter-spacing: 2px;
   font-size: 19px;
   color: #ffffff;
-  text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 .subbrand {
@@ -95,7 +101,11 @@ body {
 .event-badge {
   margin-left: auto;
   text-align: center;
-  background: linear-gradient(135deg, rgba(212, 156, 41, 0.2), rgba(143, 25, 61, 0.4));
+  background: linear-gradient(
+    135deg,
+    rgba(212, 156, 41, 0.2),
+    rgba(143, 25, 61, 0.4)
+  );
   border: 1px solid var(--gold-glow);
   border-radius: 12px;
   padding: 6px 12px;
@@ -126,8 +136,14 @@ body {
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(8px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* Hero Section */
@@ -145,8 +161,14 @@ body {
 }
 
 @keyframes pulseGlow {
-  from { opacity: 0.7; transform: scale(0.98); }
-  to { opacity: 1; transform: scale(1.03); }
+  from {
+    opacity: 0.7;
+    transform: scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1.03);
+  }
 }
 
 .eyebrow {
@@ -166,7 +188,7 @@ body {
   line-height: 1.05;
   margin: 8px 0;
   color: #ffffff;
-  text-shadow: 0 4px 12px rgba(0,0,0,0.5);
+  text-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
 }
 
 .hero h1 span {
@@ -260,7 +282,8 @@ form label {
 }
 
 /* Inputs & Select */
-select, input {
+select,
+input {
   width: 100%;
   border: 2px solid #e8d5c8;
   background: #fff;
@@ -273,14 +296,16 @@ select, input {
   transition: all 0.2s ease;
 }
 
-select:focus, input:focus {
+select:focus,
+input:focus {
   border-color: var(--primary);
   box-shadow: 0 0 0 4px rgba(143, 25, 61, 0.12);
   background: #ffffff;
 }
 
 /* Buttons */
-.primary, .secondary {
+.primary,
+.secondary {
   width: 100%;
   border: 0;
   border-radius: var(--radius-md);
@@ -295,7 +320,11 @@ select:focus, input:focus {
 }
 
 .primary {
-  background: linear-gradient(135deg, var(--primary-light), var(--primary-dark));
+  background: linear-gradient(
+    135deg,
+    var(--primary-light),
+    var(--primary-dark)
+  );
   color: #fff;
   box-shadow: var(--shadow-glow);
 }
@@ -327,7 +356,8 @@ select:focus, input:focus {
   text-align: center;
 }
 
-.privacy, .small {
+.privacy,
+.small {
   font-size: 11px;
   color: var(--text-muted);
   line-height: 1.5;
@@ -445,7 +475,7 @@ select:focus, input:focus {
   font-weight: 600;
   color: var(--text-main);
   transition: all 0.2s ease;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
 }
 
 .answer:hover {
@@ -500,7 +530,7 @@ select:focus, input:focus {
   font-size: 68px;
   line-height: 1;
   margin-bottom: 10px;
-  filter: drop-shadow(0 6px 12px rgba(0,0,0,0.15));
+  filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.15));
 }
 
 .result-card h1 {
@@ -554,7 +584,8 @@ select:focus, input:focus {
   gap: 10px;
 }
 
-.admin-actions .primary, .admin-actions .secondary {
+.admin-actions .primary,
+.admin-actions .secondary {
   margin-top: 0;
   padding: 10px 16px;
   font-size: 14px;

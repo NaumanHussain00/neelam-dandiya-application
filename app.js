@@ -1,10 +1,19 @@
 const CONFIG = { GOOGLE_SCRIPT_URL: "" };
-const STORAGE_KEY = "neelam_dandiya_leads_v1", STATS_KEY = "neelam_dandiya_stats_v1";
-let state = { lead: null, questions: [], index: 0, score: 0, locked: false, timerId: null, timeLeft: 30 };
+const STORAGE_KEY = "neelam_dandiya_leads_v1",
+  STATS_KEY = "neelam_dandiya_stats_v1";
+let state = {
+  lead: null,
+  questions: [],
+  index: 0,
+  score: 0,
+  locked: false,
+  timerId: null,
+  timeLeft: 30,
+};
 let adminAuthToken = null;
 let adminFetchedLeads = [];
 
-const $ = id => document.getElementById(id);
+const $ = (id) => document.getElementById(id);
 const screens = ["home", "quiz", "result", "admin"];
 
 function clearQuestionTimer() {
@@ -24,8 +33,8 @@ function handleQuestionTimeout() {
   state.locked = true;
   const q = state.questions[state.index];
   const buttons = [...document.querySelectorAll(".answer")];
-  buttons.forEach(b => b.classList.add("disabled"));
-  const correctButton = buttons.find(b => b.textContent === q.answer);
+  buttons.forEach((b) => b.classList.add("disabled"));
+  const correctButton = buttons.find((b) => b.textContent === q.answer);
   correctButton?.classList.add("correct");
   $("feedback").textContent = `Time's up! Correct answer: ${q.answer}`;
   updateLead({ score: state.score, result: "lost", status: "completed" });
@@ -51,18 +60,32 @@ function startQuestionTimer() {
 
 function show(id) {
   if (id !== "quiz") clearQuestionTimer();
-  screens.forEach(s => $(s).classList.toggle("active", s === id));
+  screens.forEach((s) => $(s).classList.toggle("active", s === id));
   window.scrollTo(0, 0);
 }
 
 function getLeads() {
-  try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]"); } catch { return []; }
+  try {
+    return JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+  } catch {
+    return [];
+  }
 }
-function saveLeads(a) { localStorage.setItem(STORAGE_KEY, JSON.stringify(a)); }
+function saveLeads(a) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(a));
+}
 function getStats() {
-  try { return JSON.parse(localStorage.getItem(STATS_KEY) || '{"played":0,"wins":0}'); } catch { return { played: 0, wins: 0 }; }
+  try {
+    return JSON.parse(
+      localStorage.getItem(STATS_KEY) || '{"played":0,"wins":0}',
+    );
+  } catch {
+    return { played: 0, wins: 0 };
+  }
 }
-function saveStats(s) { localStorage.setItem(STATS_KEY, JSON.stringify(s)); }
+function saveStats(s) {
+  localStorage.setItem(STATS_KEY, JSON.stringify(s));
+}
 
 function shuffleArray(items) {
   const a = [...items];
@@ -77,10 +100,14 @@ function pickQuestions(bank, n) {
   return shuffleArray(bank).slice(0, n);
 }
 
-function phoneValid(p) { return /^[6-9]\d{9}$/.test(p); }
-function nameValid(n) { return /^[A-Za-z\s]+$/.test(n); }
+function phoneValid(p) {
+  return /^[6-9]\d{9}$/.test(p);
+}
+function nameValid(n) {
+  return /^[A-Za-z\s]+$/.test(n);
+}
 
-$("registrationForm").addEventListener("submit", e => {
+$("registrationForm").addEventListener("submit", (e) => {
   e.preventDefault();
   const role = document.querySelector('input[name="role"]:checked')?.value;
   const course = $("course").value;
@@ -88,26 +115,41 @@ $("registrationForm").addEventListener("submit", e => {
   const name = $("name").value.trim();
 
   if (!name || !nameValid(name)) {
-    $("formError").textContent = "Please enter a valid name containing only letters and spaces.";
+    $("formError").textContent =
+      "Please enter a valid name containing only letters and spaces.";
     return;
   }
   if (!role || !course || !phoneValid(phone)) {
-    $("formError").textContent = "Please select your role, course and enter a valid 10-digit Indian mobile number.";
+    $("formError").textContent =
+      "Please select your role, course and enter a valid 10-digit Indian mobile number.";
     return;
   }
 
   const lead = {
     id: crypto.randomUUID ? crypto.randomUUID() : Date.now() + "",
-    name, role, course, phone,
+    name,
+    role,
+    course,
+    phone,
     registeredAt: new Date().toISOString(),
-    status: "pending", score: 0, result: "started"
+    status: "pending",
+    score: 0,
+    result: "started",
   };
 
   const leads = getLeads();
   leads.push(lead);
   saveLeads(leads);
 
-  state = { lead, questions: pickQuestions(QUESTION_BANK.categories[course], 3), index: 0, score: 0, locked: false, timerId: null, timeLeft: 30 };
+  state = {
+    lead,
+    questions: pickQuestions(QUESTION_BANK.categories[course], 3),
+    index: 0,
+    score: 0,
+    locked: false,
+    timerId: null,
+    timeLeft: 30,
+  };
   renderQuestion();
   show("quiz");
 });
@@ -117,14 +159,14 @@ function renderQuestion() {
   $("categoryPill").textContent = state.lead.course.toUpperCase();
   $("qNumber").textContent = `QUESTION ${state.index + 1}`;
   $("questionCount").textContent = `${state.index + 1} / 3`;
-  $("progressBar").style.width = ((state.index + 1) / 3 * 100) + "%";
+  $("progressBar").style.width = ((state.index + 1) / 3) * 100 + "%";
   $("questionText").textContent = q.question;
   $("feedback").textContent = "";
 
   const options = shuffleArray(q.options);
   const box = $("answers");
   box.innerHTML = "";
-  options.forEach(opt => {
+  options.forEach((opt) => {
     const b = document.createElement("button");
     b.className = "answer";
     b.type = "button";
@@ -137,7 +179,8 @@ function renderQuestion() {
 }
 
 function updateLead(patch) {
-  const a = getLeads(), i = a.findIndex(x => x.id === state.lead.id);
+  const a = getLeads(),
+    i = a.findIndex((x) => x.id === state.lead.id);
   if (i >= 0) {
     a[i] = { ...a[i], ...patch };
     saveLeads(a);
@@ -149,16 +192,20 @@ function answer(btn, opt, q) {
   if (state.locked) return;
   clearQuestionTimer();
   state.locked = true;
-  document.querySelectorAll(".answer").forEach(b => b.classList.add("disabled"));
+  document
+    .querySelectorAll(".answer")
+    .forEach((b) => b.classList.add("disabled"));
   const ok = opt === q.answer;
   btn.classList.add(ok ? "correct" : "wrong");
 
   if (!ok) {
-    const correctButton = [...document.querySelectorAll(".answer")].find(b => b.textContent === q.answer);
+    const correctButton = [...document.querySelectorAll(".answer")].find(
+      (b) => b.textContent === q.answer,
+    );
     correctButton?.classList.add("correct");
     $("feedback").textContent = `✕ Incorrect! Correct answer: ${q.answer}`;
     updateLead({ score: state.score, result: "lost", status: "completed" });
-    setTimeout(() => finish(false), 1000);
+    setTimeout(() => finish(false), 1800);
     return;
   }
 
@@ -170,7 +217,10 @@ function answer(btn, opt, q) {
     setTimeout(() => finish(true), 750);
   } else {
     state.index++;
-    setTimeout(() => { state.locked = false; renderQuestion(); }, 850);
+    setTimeout(() => {
+      state.locked = false;
+      renderQuestion();
+    }, 850);
   }
 }
 
@@ -191,16 +241,23 @@ function finish(win) {
   const b = document.createElement("button");
   b.className = "primary";
   b.textContent = win ? "PLAY AGAIN" : "TRY AGAIN";
-  b.onclick = () => { $("registrationForm").reset(); show("home"); };
+  b.onclick = () => {
+    $("registrationForm").reset();
+    show("home");
+  };
   $("resultActions").appendChild(b);
 
   if (win && CONFIG.GOOGLE_SCRIPT_URL) syncPending();
   show("result");
 }
 
-$("quitBtn").onclick = () => { if (confirm("Exit this challenge?")) show("home"); };
-$("phone").oninput = e => e.target.value = e.target.value.replace(/\D/g, "").slice(0, 10);
-$("name").oninput = e => e.target.value = e.target.value.replace(/[^A-Za-z\s]/g, "");
+$("quitBtn").onclick = () => {
+  if (confirm("Exit this challenge?")) show("home");
+};
+$("phone").oninput = (e) =>
+  (e.target.value = e.target.value.replace(/\D/g, "").slice(0, 10));
+$("name").oninput = (e) =>
+  (e.target.value = e.target.value.replace(/[^A-Za-z\s]/g, ""));
 
 /* Admin Panel Auth & Data handling */
 $("adminNavBtn")?.addEventListener("click", () => {
@@ -240,7 +297,7 @@ async function fetchAdminData() {
   if (adminAuthToken !== "9630") return;
   try {
     const res = await fetch("/api/admin/leads", {
-      headers: { "x-admin-password": adminAuthToken }
+      headers: { "x-admin-password": adminAuthToken },
     });
     if (res.ok) {
       const data = await res.json();
@@ -258,32 +315,47 @@ async function fetchAdminData() {
 function renderAdminTable(leads) {
   const body = $("adminLeadsBody");
   if (!leads.length) {
-    body.innerHTML = '<tr><td colspan="7" style="text-align:center;">No records found in database.</td></tr>';
+    body.innerHTML =
+      '<tr><td colspan="7" style="text-align:center;">No records found in database.</td></tr>';
     $("totalDbCount").textContent = "0";
     $("totalWinsCount").textContent = "0";
     return;
   }
 
   $("totalDbCount").textContent = leads.length;
-  $("totalWinsCount").textContent = leads.filter(x => x.result === "won").length;
+  $("totalWinsCount").textContent = leads.filter(
+    (x) => x.result === "won",
+  ).length;
 
-  body.innerHTML = leads.map(x => `
+  body.innerHTML = leads
+    .map(
+      (x) => `
     <tr>
-      <td><b>${escapeHtml(x.name || 'N/A')}</b></td>
-      <td>${escapeHtml(x.phone || '')}</td>
-      <td>${escapeHtml(x.role || '')}</td>
-      <td>${escapeHtml(x.course || '')}</td>
+      <td><b>${escapeHtml(x.name || "N/A")}</b></td>
+      <td>${escapeHtml(x.phone || "")}</td>
+      <td>${escapeHtml(x.role || "")}</td>
+      <td>${escapeHtml(x.course || "")}</td>
       <td>${x.score ?? 0}/3</td>
-      <td><span class="badge ${x.result}">${escapeHtml(x.result || '')}</span></td>
+      <td><span class="badge ${x.result}">${escapeHtml(x.result || "")}</span></td>
       <td>${new Date(x.registered_at || x.registeredAt).toLocaleDateString()}</td>
     </tr>
-  `).join("");
+  `,
+    )
+    .join("");
 }
 
 function escapeHtml(s) {
-  return String(s).replace(/[&<>"']/g, m => ({
-    "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
-  }[m]));
+  return String(s).replace(
+    /[&<>"']/g,
+    (m) =>
+      ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;",
+      })[m],
+  );
 }
 
 function csvEscape(v) {
@@ -296,13 +368,33 @@ $("exportDbCsvBtn")?.addEventListener("click", () => {
     return;
   }
   const rows = [
-    ["ID", "Name", "Role", "Course", "Phone", "Registered At", "Score", "Result", "Status"],
-    ...adminFetchedLeads.map(x => [
-      x.id, x.name, x.role, x.course, x.phone,
-      x.registered_at || x.registeredAt, x.score, x.result, x.status
-    ])
+    [
+      "ID",
+      "Name",
+      "Role",
+      "Course",
+      "Phone",
+      "Registered At",
+      "Score",
+      "Result",
+      "Status",
+    ],
+    ...adminFetchedLeads.map((x) => [
+      x.id,
+      x.name,
+      x.role,
+      x.course,
+      x.phone,
+      x.registered_at || x.registeredAt,
+      x.score,
+      x.result,
+      x.status,
+    ]),
   ];
-  const blob = new Blob([rows.map(r => r.map(csvEscape).join(",")).join("\n")], { type: "text/csv;charset=utf-8" });
+  const blob = new Blob(
+    [rows.map((r) => r.map(csvEscape).join(",")).join("\n")],
+    { type: "text/csv;charset=utf-8" },
+  );
   const link = document.createElement("a");
   link.href = URL.createObjectURL(blob);
   link.download = `neelam_quiz_leads_${Date.now()}.csv`;
@@ -314,15 +406,20 @@ async function syncPending() {
   if (!CONFIG.GOOGLE_SCRIPT_URL || !navigator.onLine) return;
   const a = getLeads();
   let changed = false;
-  for (const lead of a.filter(x => x.status !== "synced")) {
+  for (const lead of a.filter((x) => x.status !== "synced")) {
     try {
       const r = await fetch(CONFIG.GOOGLE_SCRIPT_URL, {
         method: "POST",
         headers: { "Content-Type": "text/plain;charset=utf-8" },
-        body: JSON.stringify(lead)
+        body: JSON.stringify(lead),
       });
-      if (r.ok) { lead.status = "synced"; changed = true; }
-    } catch { break; }
+      if (r.ok) {
+        lead.status = "synced";
+        changed = true;
+      }
+    } catch {
+      break;
+    }
   }
   if (changed) saveLeads(a);
 }

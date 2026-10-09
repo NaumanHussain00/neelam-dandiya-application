@@ -1,74 +1,192 @@
-<!doctype html><html lang="en"><head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#8f1537"><title>Neelam — Which Career Are You?</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css"></head>
-<body><div class="app-shell"><header class="topbar"><div class="brand-mark">N</div>
-<div><div class="brand">NEELAM</div><div class="subbrand">GROUP OF INSTITUTIONS • AGRA</div></div>
-<div class="event-badge">DANDIYA '26<br><small>10 OCTOBER</small></div>
-<button id="adminNavBtn" class="admin-nav-btn" title="Admin Panel">🔒 Admin</button></header><main>
-<section id="home" class="screen active"><div class="hero"><div class="sparkles">✦ ✧ ✦</div>
-<p class="eyebrow">YOUR FUTURE = YOUR CHOICE</p><h1>Which Career<br><span>Are You?</span></h1><p class="lead">Play 3 questions. Get all 3 right. Win!</p></div>
-<form id="registrationForm" class="card"><h2>Let's get started</h2><p class="muted">Register once to enter the Neelam Dandiya Challenge.</p>
-<label>Your role</label><div class="role-grid"><label class="role-option"><input type="radio" name="role" value="Student" required><span>🎓 <b>Student</b></span></label>
-<label class="role-option"><input type="radio" name="role" value="Parent"><span>👨‍👩‍👧 <b>Parent</b></span></label></div>
-<label for="course">Which career stream interests you?</label><select id="course" required><option value="">Select a stream</option>
-<option>Technology</option><option>Business</option><option>Computers</option><option>Pharmacy</option><option>Teaching</option><option>Technical Skills</option></select>
-<label for="phone">Mobile number</label><input id="phone" inputmode="numeric" maxlength="10" placeholder="10-digit mobile number" required>
-<label for="name">Name</label><input id="name" maxlength="60" placeholder="Your name" required>
-<button class="primary" type="submit">START THE CHALLENGE <span>→</span></button><p id="formError" class="error"></p>
-<p class="privacy">Your details are saved on this device and sync to the event SQLite server when connected.</p></form></section>
-<section id="quiz" class="screen"><div class="quiz-head"><button class="text-btn" id="quitBtn">← Exit</button>
-<div class="progress-wrap"><div class="progress"><div id="progressBar"></div></div><span id="questionCount">1 / 3</span></div></div>
-<div class="card question-card"><div class="category-pill" id="categoryPill"></div><div class="q-number" id="qNumber">QUESTION 1</div>
-<h2 id="questionText"></h2><div id="answers" class="answers"></div><div id="feedback" class="feedback"></div></div></section>
-<section id="result" class="screen"><div class="result-card"><div id="resultIcon" class="result-icon"></div><p class="eyebrow" id="resultEyebrow"></p><h1 id="resultTitle"></h1>
-<p id="resultMessage"></p><div id="resultActions"></div></div></section>
-<section id="admin" class="screen">
-  <div id="adminAuthCard" class="card">
-    <h2>Admin Authentication</h2>
-    <p class="muted">Enter passcode to view database leads & export data.</p>
-    <label for="adminPassword">Password</label>
-    <input id="adminPassword" type="password" placeholder="Enter Admin Password">
-    <button class="primary" id="adminLoginBtn">LOGIN</button>
-    <p id="adminError" class="error"></p>
-  </div>
-  <div id="adminPanelCard" class="card admin-full-card" style="display:none;">
-    <div class="admin-header">
-      <div>
-        <h2>Database Leads</h2>
-        <p class="muted">All records stored in SQLite database.</p>
-      </div>
-      <div class="admin-actions">
-        <button class="primary export-btn" id="exportDbCsvBtn">📥 EXPORT CSV</button>
-        <button class="secondary back-btn" id="adminLogoutBtn">Exit Admin</button>
-      </div>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width,initial-scale=1,viewport-fit=cover"
+    />
+    <meta name="theme-color" content="#8f1537" />
+    <title>Neelam — Which Career Are You?</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar">
+        <div class="brand-mark">N</div>
+        <div>
+          <div class="brand">NEELAM</div>
+          <div class="subbrand">GROUP OF INSTITUTIONS • AGRA</div>
+        </div>
+        <div class="event-badge">
+          DANDIYA '26<br /><small>10 OCTOBER</small>
+        </div>
+        <button id="adminNavBtn" class="admin-nav-btn" title="Admin Panel">
+          🔒 Admin
+        </button>
+      </header>
+      <main>
+        <section id="home" class="screen active">
+          <div class="hero">
+            <div class="sparkles">✦ ✧ ✦</div>
+            <p class="eyebrow">YOUR FUTURE = YOUR CHOICE</p>
+            <h1>Which Career<br /><span>Are You?</span></h1>
+            <p class="lead">Play 3 questions. Get all 3 right. Win!</p>
+          </div>
+          <form id="registrationForm" class="card">
+            <h2>Let's get started</h2>
+            <p class="muted">
+              Register once to enter the Neelam Dandiya Challenge.
+            </p>
+            <label>Your role</label>
+            <div class="role-grid">
+              <label class="role-option"
+                ><input
+                  type="radio"
+                  name="role"
+                  value="Student"
+                  required
+                /><span>🎓 <b>Student</b></span></label
+              >
+              <label class="role-option"
+                ><input type="radio" name="role" value="Parent" /><span
+                  >👨‍👩‍👧 <b>Parent</b></span
+                ></label
+              >
+            </div>
+            <label for="course">Which career stream interests you?</label
+            ><select id="course" required>
+              <option value="">Select a stream</option>
+              <option>Technology</option>
+              <option>Business</option>
+              <option>Computers</option>
+              <option>Pharmacy</option>
+              <option>Teaching</option>
+              <option>Technical Skills</option>
+            </select>
+            <label for="phone">Mobile number</label
+            ><input
+              id="phone"
+              inputmode="numeric"
+              maxlength="10"
+              placeholder="10-digit mobile number"
+              required
+            />
+            <label for="name">Name</label
+            ><input id="name" maxlength="60" placeholder="Your name" required />
+            <button class="primary" type="submit">
+              START THE CHALLENGE <span>→</span>
+            </button>
+            <p id="formError" class="error"></p>
+            <p class="privacy">
+              Your details are saved on this device and sync to the event SQLite
+              server when connected.
+            </p>
+          </form>
+        </section>
+        <section id="quiz" class="screen">
+          <div class="quiz-head">
+            <button class="text-btn" id="quitBtn">← Exit</button>
+            <div class="progress-wrap">
+              <div class="progress"><div id="progressBar"></div></div>
+              <span id="questionCount">1 / 3</span>
+            </div>
+          </div>
+          <div class="card question-card">
+            <div class="category-pill" id="categoryPill"></div>
+            <div class="q-number" id="qNumber">QUESTION 1</div>
+            <h2 id="questionText"></h2>
+            <div id="answers" class="answers"></div>
+            <div id="feedback" class="feedback"></div>
+          </div>
+        </section>
+        <section id="result" class="screen">
+          <div class="result-card">
+            <div id="resultIcon" class="result-icon"></div>
+            <p class="eyebrow" id="resultEyebrow"></p>
+            <h1 id="resultTitle"></h1>
+            <p id="resultMessage"></p>
+            <div id="resultActions"></div>
+          </div>
+        </section>
+        <section id="admin" class="screen">
+          <div id="adminAuthCard" class="card">
+            <h2>Admin Authentication</h2>
+            <p class="muted">
+              Enter passcode to view database leads & export data.
+            </p>
+            <label for="adminPassword">Password</label>
+            <input
+              id="adminPassword"
+              type="password"
+              placeholder="Enter Admin Password"
+            />
+            <button class="primary" id="adminLoginBtn">LOGIN</button>
+            <p id="adminError" class="error"></p>
+          </div>
+          <div
+            id="adminPanelCard"
+            class="card admin-full-card"
+            style="display: none"
+          >
+            <div class="admin-header">
+              <div>
+                <h2>Database Leads</h2>
+                <p class="muted">All records stored in SQLite database.</p>
+              </div>
+              <div class="admin-actions">
+                <button class="primary export-btn" id="exportDbCsvBtn">
+                  📥 EXPORT CSV
+                </button>
+                <button class="secondary back-btn" id="adminLogoutBtn">
+                  Exit Admin
+                </button>
+              </div>
+            </div>
+            <div class="stats">
+              <div>
+                <b id="totalDbCount">0</b><span>Total Registrations</span>
+              </div>
+              <div><b id="totalWinsCount">0</b><span>Winners</span></div>
+            </div>
+            <div class="table-responsive">
+              <table class="admin-table">
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Phone</th>
+                    <th>Role</th>
+                    <th>Stream</th>
+                    <th>Score</th>
+                    <th>Result</th>
+                    <th>Date</th>
+                  </tr>
+                </thead>
+                <tbody id="adminLeadsBody">
+                  <tr>
+                    <td colspan="7" style="text-align: center">
+                      Loading database records...
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+      </main>
+      <footer>
+        Neelam Group of Institutions, Agra • Celebrate. Connect. Build Your
+        Future.
+      </footer>
     </div>
-    <div class="stats">
-      <div><b id="totalDbCount">0</b><span>Total Registrations</span></div>
-      <div><b id="totalWinsCount">0</b><span>Winners</span></div>
-    </div>
-    <div class="table-responsive">
-      <table class="admin-table">
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Phone</th>
-            <th>Role</th>
-            <th>Stream</th>
-            <th>Score</th>
-            <th>Result</th>
-            <th>Date</th>
-          </tr>
-        </thead>
-        <tbody id="adminLeadsBody">
-          <tr><td colspan="7" style="text-align:center;">Loading database records...</td></tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-</section></main>
-<footer>Neelam Group of Institutions, Agra • Celebrate. Connect. Build Your Future.</footer></div>
-<script src="questions.js"></script><script src="app.js"></script><script src="server-sync.js"></script></body></html>
+    <script src="questions.js"></script>
+    <script src="app.js"></script>
+    <script src="server-sync.js"></script>
+  </body>
+</html>

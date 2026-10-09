@@ -23,23 +23,32 @@
   }
 
   window.syncPending = async function () {
-    if (!navigator.onLine || window.location?.protocol === "file:" || syncInProgress) return;
+    if (
+      !navigator.onLine ||
+      window.location?.protocol === "file:" ||
+      syncInProgress
+    )
+      return;
     syncInProgress = true;
 
     try {
       const leads = getLocalLeads();
       for (const lead of leads) {
         const saveToSQLite = lead.serverSync !== "synced";
-        const saveToGoogle = CONFIG.GOOGLE_SCRIPT_URL && lead.googleSync !== "synced";
+        const saveToGoogle =
+          CONFIG.GOOGLE_SCRIPT_URL && lead.googleSync !== "synced";
         if (!saveToSQLite && !saveToGoogle) continue;
 
         try {
           if (saveToSQLite) {
-            const response = await fetch(`/api/leads/${encodeURIComponent(lead.id)}`, {
-              method: "PUT",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify(lead),
-            });
+            const response = await fetch(
+              `/api/leads/${encodeURIComponent(lead.id)}`,
+              {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(lead),
+              },
+            );
             if (!response.ok) break;
 
             lead.serverSync = "synced";
@@ -86,8 +95,9 @@
     const queueCount = document.getElementById("queueCount");
     const playedCount = document.getElementById("playedCount");
     if (queueCount) {
-      queueCount.textContent = getLocalLeads()
-        .filter((lead) => lead.serverSync !== "synced").length;
+      queueCount.textContent = getLocalLeads().filter(
+        (lead) => lead.serverSync !== "synced",
+      ).length;
     }
     if (playedCount) {
       playedCount.textContent = getStats().played;
