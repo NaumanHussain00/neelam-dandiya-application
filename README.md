@@ -12,7 +12,7 @@ Offline-first event quiz for Neelam Group of Institutions, Agra, with SQLite-bac
 - CSV export.
 - Optional Google Sheets copy.
 
-## Run with SQLite
+## Run with SQLite or Neon
 
 Install Node.js 20.19 or newer, then run these commands from the project folder:
 
@@ -23,9 +23,11 @@ npm start
 
 Open `http://localhost:3000`. Other devices on the same trusted event network can use the `Network` URL printed by the server. Keep the server on a trusted local network; do not expose it directly to the public internet.
 
-SQLite is stored in this project folder as `leads.sqlite`. On the next server start, existing records from the previous home-folder database are imported once and retained. Set `SQLITE_PATH` to choose another database file, or `PORT` to change the server port.
+For local SQLite storage, the database file is stored in this project folder as `leads.sqlite`. Set `SQLITE_PATH` to choose another database file, or `PORT` to change the server port.
 
-Registrations are queued in the browser and sent to SQLite when connected. Final scores and results update the same database record. Pending records automatically sync when connectivity returns.
+For permanent cloud storage on Neon, set `DATABASE_URL` to your PostgreSQL connection string before starting the app. The server will automatically use Neon when that variable is present, and fall back to SQLite otherwise.
+
+Registrations are queued in the browser and sent to the configured database when connected. Final scores and results update the same record. Pending records automatically sync when connectivity returns.
 
 ## Offline-only use
 
