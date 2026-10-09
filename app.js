@@ -64,13 +64,17 @@ function getStats() {
 }
 function saveStats(s) { localStorage.setItem(STATS_KEY, JSON.stringify(s)); }
 
-function pickQuestions(bank, n) {
-  const a = [...bank];
+function shuffleArray(items) {
+  const a = [...items];
   for (let i = a.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     [a[i], a[j]] = [a[j], a[i]];
   }
-  return a.slice(0, n);
+  return a;
+}
+
+function pickQuestions(bank, n) {
+  return shuffleArray(bank).slice(0, n);
 }
 
 function phoneValid(p) { return /^[6-9]\d{9}$/.test(p); }
@@ -117,9 +121,10 @@ function renderQuestion() {
   $("questionText").textContent = q.question;
   $("feedback").textContent = "";
 
+  const options = shuffleArray(q.options);
   const box = $("answers");
   box.innerHTML = "";
-  q.options.forEach(opt => {
+  options.forEach(opt => {
     const b = document.createElement("button");
     b.className = "answer";
     b.type = "button";
