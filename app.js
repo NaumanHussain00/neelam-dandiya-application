@@ -143,7 +143,10 @@ $("registrationForm").addEventListener("submit", (e) => {
 
   state = {
     lead,
-    questions: pickQuestions(QUESTION_BANK.categories[course], 3),
+    questions: [
+      ...pickQuestions(QUESTION_BANK.categories[course], 2),
+      ...pickQuestions(QUESTION_BANK.reasoningQuestions[course], 1),
+    ],
     index: 0,
     score: 0,
     locked: false,
